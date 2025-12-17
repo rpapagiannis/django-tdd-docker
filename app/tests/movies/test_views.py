@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from movies.models import Movie
@@ -64,8 +62,12 @@ def test_get_single_movie(client, add_movie):
     assert resp.status_code == 200
     assert resp.data["title"] == "The Big Lebowski"
 
-def test_get_single_movie_incorrect_id(client):
-    resp = client.get("/api/movies/foo/")
+@pytest.mark.django_db
+def test_get_single_movie_incorrect_id(client, add_movie):
+    movie = add_movie(title="The Big Lebowski", genre="Comedy", year="1998")
+    deleted_id = movie.id
+    movie.delete()
+    resp = client.get(f"/api/movies/{deleted_id}/")
     assert resp.status_code == 404
 
 @pytest.mark.django_db
