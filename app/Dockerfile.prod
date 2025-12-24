@@ -1,0 +1,24 @@
+FROM python:3.12.4-slim-bookworm
+
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV DEBUG 0
+ENV SECRET_KEY 'Ff;D,L:{ayf2cqe,hTr#}VW:5=zP5%mfP,{@NzH(zyZJW6k/j-'
+ENV DJANGO_ALLOWED_HOSTS .herokuapp.com
+
+RUN apt-get update \
+  && apt-get -y install gcc postgresql \
+  && apt-get clean
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY ./requirements.txt .
+RUN uv pip install -r requirements.txt --system
+
+COPY . .
+
+RUN adduser --disabled-password myuser
+USER myuser
+
+CMD gunicorn drf_project.wsgi:application --bind 0.0.0.0:$PORT
