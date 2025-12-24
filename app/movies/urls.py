@@ -4,5 +4,5 @@ from rest_framework import routers
 
 
 router = routers.SimpleRouter()
-router.register(r'api/movies', MovieViewSet)
+router.register(r'api/movies', MovieViewSet, basename='movie')
 urlpatterns = router.urls

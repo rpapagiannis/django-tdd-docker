@@ -7,14 +7,16 @@ from .models import Movie
 from .serializers import MovieSerializer
 
 class MovieViewSet(ViewSet):
-    queryset = Movie.objects.all()
+    
+    def get_queryset(self):
+        return Movie.objects.all()
 
     def list(self, request):
-        serializer = MovieSerializer(self.queryset, many=True)
+        serializer = MovieSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        item = get_object_or_404(self.queryset, pk=pk)
+        item = get_object_or_404(self.get_queryset(), pk=pk)
         serializer = MovieSerializer(item)
         return Response(serializer.data)
 
