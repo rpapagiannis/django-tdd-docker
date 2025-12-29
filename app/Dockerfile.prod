@@ -18,6 +18,8 @@ RUN uv pip install -r requirements.txt --system
 
 COPY . .
 
+RUN python manage.py collectstatic --noinput
+
 RUN adduser --disabled-password myuser
 USER myuser
 
