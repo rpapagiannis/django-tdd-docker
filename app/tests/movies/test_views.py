@@ -2,6 +2,7 @@ import pytest
 
 from movies.models import Movie
 
+
 @pytest.mark.django_db
 def test_add_movie(client):
     movies = Movie.objects.all()
@@ -14,28 +15,26 @@ def test_add_movie(client):
             "genre": "Comedy",
             "year": "1998",
         },
-        content_type="application/json"
+        content_type="application/json",
     )
     assert resp.status_code == 201
     assert resp.data["title"] == "The Big Lebowski"
 
     movies = Movie.objects.all()
-    assert len(movies) == 1 
+    assert len(movies) == 1
+
 
 @pytest.mark.django_db
 def test_add_movie_invalid_json(client):
     movies = Movie.objects.all()
     assert len(movies) == 0
 
-    resp = client.post(
-        "/api/movies/",
-        {},
-        content_type="application/json"
-    )
+    resp = client.post("/api/movies/", {}, content_type="application/json")
     assert resp.status_code == 400
 
     movies = Movie.objects.all()
     assert len(movies) == 0
+
 
 @pytest.mark.django_db
 def test_add_movie_invalid_json_keys(client):
@@ -48,12 +47,13 @@ def test_add_movie_invalid_json_keys(client):
             "title": "The Big Lebowski",
             "genre": "Comedy",
         },
-        content_type="application/json"
+        content_type="application/json",
     )
     assert resp.status_code == 400
 
     movies = Movie.objects.all()
     assert len(movies) == 0
+
 
 @pytest.mark.django_db
 def test_get_single_movie(client, add_movie):
@@ -62,6 +62,7 @@ def test_get_single_movie(client, add_movie):
     assert resp.status_code == 200
     assert resp.data["title"] == "The Big Lebowski"
 
+
 @pytest.mark.django_db
 def test_get_single_movie_incorrect_id(client, add_movie):
     movie = add_movie(title="The Big Lebowski", genre="Comedy", year="1998")
@@ -69,6 +70,7 @@ def test_get_single_movie_incorrect_id(client, add_movie):
     movie.delete()
     resp = client.get(f"/api/movies/{deleted_id}/")
     assert resp.status_code == 404
+
 
 @pytest.mark.django_db
 def test_get_all_movies(client, add_movie):

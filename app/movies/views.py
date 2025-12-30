@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 from .models import Movie
 from .serializers import MovieSerializer
 
+
 class MovieViewSet(ViewSet):
-    
+
     def get_queryset(self):
         return Movie.objects.all()
 
